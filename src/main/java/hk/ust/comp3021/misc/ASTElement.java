@@ -2,9 +2,12 @@ package hk.ust.comp3021.misc;
 
 import hk.ust.comp3021.query.QueryOnNode;
 import hk.ust.comp3021.utils.*;
+
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class ASTElement {
     private int lineno;
@@ -58,7 +61,7 @@ public abstract class ASTElement {
     }
 
     public abstract String getNodeType();
-    
+
     /*
      * Return direct children of current node, which are fields whose type is `ASTElement`.
      * Noticed that field whose class type is `ASTEnumOp` should not be regarded as children.
@@ -66,39 +69,72 @@ public abstract class ASTElement {
     public abstract ArrayList<ASTElement> getChildren();
 
     /**
-     * TODO `filter` mimic {@link java.util.stream.Stream#filter(Predicate)} but operates on AST tree structure instead of List 
+     * TODO `filter` mimic {@link java.util.stream.Stream#filter(Predicate)} but operates on AST tree structure instead of List
      * TODO please design the function by yourself to pass complication and the provided test cases
      *
      * @param predicate representing a boolean-valued function that takes ASTElement as input parameter and returns a bool result
      * @return an ArrayList of ASTElement where predicate returns true
-     * 
+     * <p>
      * Hints: traverse the tree and put those satisfy predicates into array list
      */
-  
+    public ArrayList<ASTElement> filter(Predicate<ASTElement> predicate) {
+        ArrayList<ASTElement> result = new ArrayList<>();
+        if (predicate.test(this)) {
+            result.add(this);
+        }
+        for (ASTElement child : this.getChildren()) { // recursive call
+            result.addAll(child.filter(predicate));
+        }
+        return result;
+    }
 
     /**
-     * TODO `forEach` mimic {@link Iterable#forEach(Consumer)} but operates on AST tree structure instead of List 
+     * TODO `forEach` mimic {@link Iterable#forEach(Consumer)} but operates on AST tree structure instead of List
      * TODO please design the function by yourself to pass complication and the provided test cases
      *
-     * @param action representing an operation that accepts ASTElement as input and performs some action 
+     * @param action representing an operation that accepts ASTElement as input and performs some action
      *               on it without returning any result.
      * @return null
-     * 
+     * <p>
      * Hints: traverse the tree and perform the action on every node in the tree
      */
-    
+    public void forEach(Consumer<ASTElement> action) {
+        action.accept(this);
+        for (ASTElement child : this.getChildren()) {
+            child.forEach(action);
+        }
+    }
 
     /**
-     * TODO `groupingBy` mimic {@link java.util.stream.Collectors#groupingBy(Function, Collector)} )} but operates on AST tree structure instead of List 
+     * TODO `groupingBy` mimic {@link java.util.stream.Collectors#groupingBy(Function, Collector)} )} but operates on AST tree structure instead of List
      * TODO please design the function by yourself to pass complication and the provided test cases
      *
      * @param classifier representing a function that classifies an ASTElement argument and produces the classification result with generic type
-     * @param collector representing a collector used to accumulate the ASTElement object into results
+     * @param collector  representing a collector used to accumulate the ASTElement object into results
      * @return a map whose key and value are all generic types
-     * 
+     * <p>
      * Hints: traverse the tree and group them if they belong to the same categories
      * Hints: please refer to the usage of {@link java.util.stream.Collectors#groupingBy(Function, Collector)}} to learn more about this method
      */
 
+    public <K, V, A> Map<K, V> groupingBy(Function<ASTElement, K> classifier, Collector<ASTElement, A, V> collector) {
+        // collector: supplier, accumulator, combiner, finisher
+        // K: key, A: container, V: result
 
+        // Intermediate container.
+        Map<K, A> map = new HashMap<>();
+        // accept ASTElement object and accumulate it into results
+        Consumer<ASTElement> action = element -> {
+            // 1. apply classifier to element to get key
+            K key = classifier.apply(element);
+            // 2. get container from map by key, if not exist, create a new key-value pair
+            A container = map.computeIfAbsent(key, k -> collector.supplier().get());
+            // 3. accumulate ASTElement object into results
+            collector.accumulator().accept(container, element);
+        };
+
+        this.forEach(action);
+        return map.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> collector.finisher().apply(entry.getValue())));
+    }
 }
