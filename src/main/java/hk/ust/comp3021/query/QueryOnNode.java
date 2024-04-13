@@ -9,7 +9,6 @@ import hk.ust.comp3021.stmt.AugAssignStmt;
 import hk.ust.comp3021.stmt.FunctionDefStmt;
 import hk.ust.comp3021.utils.*;
 
-import javax.sound.sampled.AudioFileFormat;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
@@ -32,13 +31,11 @@ public class QueryOnNode {
      */
     public Consumer<Integer> findFuncWithArgGtN = (paramN) -> {
         id2ASTModules.forEach((moduleID, module) -> {
-            module.getChildren().forEach(tree -> {
-                tree.filter(el -> el instanceof FunctionDefStmt && ((FunctionDefStmt) el).getParamNum() >= paramN) // filter out FunctionDefStmt with # arguments >= paramN in PA1
+            module.filter(el -> el instanceof FunctionDefStmt && ((FunctionDefStmt) el).getParamNum() >= paramN)
                         .forEach(el -> {
                             String output = moduleID + "_" + ((FunctionDefStmt) el).getName() + "_" + el.getLineNo();
                             System.out.println(output);
                         });
-            });
         });
     };
 
@@ -53,8 +50,7 @@ public class QueryOnNode {
     public Supplier<HashMap<String, Integer>> calculateOp2Nums = () -> {
         HashMap<String, Integer> op2Num = new HashMap<>();
         id2ASTModules.forEach((moduleID, module) -> {
-            module.getChildren().forEach(tree -> {
-                tree.forEach(el -> {
+                module.forEach(el -> {
                     if (el instanceof BinOpExpr) {
                         ASTEnumOp op = ((BinOpExpr) el).getOp();
                         op2Num.put(op.getOperatorName(), op2Num.getOrDefault(op.getOperatorName(), 0) + 1);
@@ -71,7 +67,6 @@ public class QueryOnNode {
                         ASTEnumOp op = ((AugAssignStmt) el).getOp();
                         op2Num.put(op.getOperatorName(), op2Num.getOrDefault(op.getOperatorName(), 0) + 1);
                     }
-                });
             });
         });
         return op2Num;
@@ -88,24 +83,14 @@ public class QueryOnNode {
         HashMap<String, Long> node2Nums = new HashMap<>();
         if ("-1".equals(astID)) {
             id2ASTModules.forEach((moduleID, module) -> {
-                module.getChildren().forEach(astElement ->
-                        astElement.groupingBy(ASTElement::getNodeType, Collectors.counting()).forEach((key, value) ->
+                module.groupingBy(ASTElement::getNodeType, Collectors.counting()).forEach((key, value) ->
                                 node2Nums.put(key, node2Nums.getOrDefault(key, 0L) + value.intValue())
-                        )
-                );
-                node2Nums.put("Module", node2Nums.getOrDefault("Module", 0L) + 1L);
+                        );
             });
             return node2Nums;
         }
         if (!id2ASTModules.containsKey(astID)) return new HashMap<>();
-        id2ASTModules.get(astID).getChildren().forEach(astElement ->
-                astElement.groupingBy(ASTElement::getNodeType, Collectors.counting()).forEach((key, value) ->
-                        node2Nums.put(key, node2Nums.getOrDefault(key, 0L) + value.intValue())
-                )
-        );
-        node2Nums.put("Module", node2Nums.getOrDefault("Module", 0L) + 1L);
-        return node2Nums;
-
+        return id2ASTModules.get(astID).groupingBy(ASTElement::getNodeType, Collectors.counting());
     };
 
 
@@ -121,12 +106,10 @@ public class QueryOnNode {
     public Supplier<List<Map.Entry<String, Integer>>> processNodeFreq = () -> {
         List<Map.Entry<String, Integer>> funcName2NodeNum = new ArrayList<>();
         id2ASTModules.forEach((moduleID, module) ->
-                module.getChildren().forEach(astElement ->
-                        astElement.filter(el -> el instanceof FunctionDefStmt)
+                module.filter(el -> el instanceof FunctionDefStmt)
                                 .forEach(func ->
                                         funcName2NodeNum.add(new AbstractMap.SimpleEntry<>(moduleID + "_" + ((FunctionDefStmt) func).getName() + "_" + func.getLineNo(), countNodes(func)))
                         )
-            )
         );
 //        System.out.println(funcName2NodeNum.size());
         funcName2NodeNum.sort((a, b) -> b.getValue() - a.getValue());
