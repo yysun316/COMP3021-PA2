@@ -2,8 +2,10 @@ package hk.ust.comp3021.misc;
 
 import hk.ust.comp3021.ASTManagerEngine;
 import hk.ust.comp3021.utils.TestKind;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+//@TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class ASTElementTest {
     @Tag(TestKind.PUBLIC)
     @Test

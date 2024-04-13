@@ -5,7 +5,6 @@ import hk.ust.comp3021.misc.*;
 import hk.ust.comp3021.stmt.*;
 import hk.ust.comp3021.utils.*;
 
-import javax.naming.Name;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
@@ -34,8 +33,10 @@ public class BugDetector {
         // xxx can be assigned to yyy.
         // xxx cannot be reassigned before close called on it, or before it's assigned to yyy.
 
-        // Create a table which stores all the variable -> callExpr (if it's not a call expr, we need to find it in the table)
-        // If variable is assigned to others before close called on it, or before it's assigned to another variable, it has bug
+        // Create a table which stores all the variable -> callExpr
+        // (if it's not a call expr, we need to find it in the table)
+        // If variable is assigned to others before close called on it, or before it's assigned to another variable,
+        // it has bug
         // If a callExpr is called on the variable, we remove the variable from table.
         Set<String> bugFunc = new HashSet<>();
         for (ASTElement function : functions) {
@@ -55,8 +56,7 @@ public class BugDetector {
 //                map.forEach((key, value) -> System.out.println(key + " and " + value.getCalledFuncName()));
 //                System.out.println();
             });
-            if (!map.isEmpty())
-                bugFunc.add(((FunctionDefStmt) function).getName());
+            if (!map.isEmpty()) bugFunc.add(((FunctionDefStmt) function).getName());
 //            System.out.println("bugFunc: " + bugFunc);
 //            System.out.println("------------------------------------------");
         }
@@ -69,17 +69,15 @@ public class BugDetector {
         String calledFuncName = expr.getCalledFuncName();
 //        System.out.println("calledFuncName: " + calledFuncName);
         String[] splitName = calledFuncName.split("\\.");
-        if (splitName.length < 2)
-            return;
+        if (splitName.length < 2) return;
         String id = splitName[0];
 //        System.out.println("id: " + id);
         CallExpr callExpr = map.get(id);
         if (callExpr != null) {
             Iterator<Map.Entry<String, CallExpr>> iter = map.entrySet().iterator();
-            while (iter.hasNext()){
+            while (iter.hasNext()) {
                 Map.Entry<String, CallExpr> next = iter.next();
-                if (next.getValue() == callExpr)
-                    iter.remove();
+                if (next.getValue() == callExpr) iter.remove();
             }
         }
 //        System.out.println("Finished Removal");
@@ -104,7 +102,8 @@ public class BugDetector {
             } else {
                 // find assigning bug (premature assignment)
                 CallExpr expr = map.get(id);
-                Map<String, CallExpr> filteredMap = map.entrySet().stream().filter(e -> !e.getKey().equals(id)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                Map<String, CallExpr> filteredMap = map.entrySet().stream().filter(e -> !e.getKey().equals(id))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
                 if (!filteredMap.containsValue(expr)) return false;
                 NameExpr name = (NameExpr) value;
                 map.put(id, map.get(name.getId())); // xxx = map.get(yyy) = open()

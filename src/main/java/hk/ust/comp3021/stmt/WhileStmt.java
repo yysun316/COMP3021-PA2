@@ -33,6 +33,4 @@ public class WhileStmt extends ASTStmt {
         children.addAll(orelse);
         return children;
     }
-    
-
 }

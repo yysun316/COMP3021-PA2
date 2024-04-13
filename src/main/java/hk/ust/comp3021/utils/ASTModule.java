@@ -1,9 +1,5 @@
 package hk.ust.comp3021.utils;
 
-import hk.ust.comp3021.expr.BinOpExpr;
-import hk.ust.comp3021.expr.BoolOpExpr;
-import hk.ust.comp3021.expr.CompareExpr;
-import hk.ust.comp3021.expr.UnaryOpExpr;
 import hk.ust.comp3021.misc.*;
 import hk.ust.comp3021.stmt.*;
 
@@ -35,7 +31,6 @@ public class ASTModule extends ASTElement {
     public void setBody(ArrayList<ASTStmt> body) {
         this.body = body;
     }
-    
 
     @Override
     public ArrayList<ASTElement> getChildren() {
@@ -43,7 +38,6 @@ public class ASTModule extends ASTElement {
         children.addAll(body);
         return children;
     }
-    
 
     public String getASTID() {
         return astID;

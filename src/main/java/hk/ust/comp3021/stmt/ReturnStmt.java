@@ -24,5 +24,4 @@ public class ReturnStmt extends ASTStmt {
         }
         return children;
     }
-    
 }

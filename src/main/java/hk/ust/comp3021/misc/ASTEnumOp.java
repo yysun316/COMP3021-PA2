@@ -157,7 +157,6 @@ public class ASTEnumOp extends ASTElement {
         ArrayList<ASTElement> children = new ArrayList<>();
         return children;
     }
-    
     @Override
     public String getNodeType() {
         return this.op.name();

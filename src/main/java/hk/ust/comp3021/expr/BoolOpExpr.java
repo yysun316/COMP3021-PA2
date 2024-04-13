@@ -2,6 +2,7 @@ package hk.ust.comp3021.expr;
 
 import hk.ust.comp3021.misc.*;
 import hk.ust.comp3021.utils.*;
+
 import java.util.*;
 
 public class BoolOpExpr extends ASTExpr {
@@ -28,5 +29,4 @@ public class BoolOpExpr extends ASTExpr {
         children.addAll(values);
         return children;
     }
-    
 }

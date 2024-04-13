@@ -26,10 +26,8 @@ public class ASTKeyWord extends ASTElement {
         children.add(value);
         return children;
     }
-    
     @Override
     public String getNodeType() {
         return "keyword";
     }
-    
 }

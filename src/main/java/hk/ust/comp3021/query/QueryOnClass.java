@@ -43,9 +43,9 @@ public class QueryOnClass {
         }
         return new ArrayList<>(names);
     };
-    private Function<String, ClassDefStmt> getClassDefStmt = className ->
-    {
-        ArrayList<ASTElement> elements = module.filter(astElement -> astElement instanceof ClassDefStmt && ((ClassDefStmt) astElement).getName().equals(className));
+    private Function<String, ClassDefStmt> getClassDefStmt = className -> {
+        ArrayList<ASTElement> elements = module.filter(astElement -> astElement instanceof ClassDefStmt &&
+                ((ClassDefStmt) astElement).getName().equals(className));
         if (!elements.isEmpty())
             return (ClassDefStmt) elements.get(0);
         return null;
@@ -87,17 +87,19 @@ public class QueryOnClass {
         ArrayList<ASTElement> classDefStmts = module.filter(astElement -> astElement instanceof ClassDefStmt);
         // Each class find it's super class
         for (ASTElement classDefStmt : classDefStmts) {
-            List<String> curClassFuncs = this.getMethods.apply(((ClassDefStmt)classDefStmt).getName());
+            List<String> curClassFuncs = this.getMethods.apply(((ClassDefStmt) classDefStmt).getName());
 //            System.out.println("curClassFuncs: " + curClassFuncs);
-            List<String> superClassNames = ((ClassDefStmt) classDefStmt).getBases().stream().map(astExpr -> ((NameExpr) astExpr).getId()).toList();
+            List<String> superClassNames = ((ClassDefStmt) classDefStmt).getBases()
+                    .stream()
+                    .map(astExpr -> ((NameExpr) astExpr).getId()).toList();
 //            System.out.println("superClassNames: " + superClassNames);
             for (String superClassName : superClassNames) {
                 List<String> parentFuncs = this.getMethods.apply(superClassName);
 //                System.out.println("parentFunc: " + parentFuncs);
                 parentFuncs.forEach(name -> {
-                   if (curClassFuncs.contains(name)) {
-                       names.add(name);
-                   }
+                    if (curClassFuncs.contains(name)) {
+                        names.add(name);
+                    }
                 });
             }
 //            System.out.println("names: " + names);
@@ -108,10 +110,11 @@ public class QueryOnClass {
 
     };
     private Function<String, List<String>> getMethods = className ->
-      module.filter(astElement -> astElement instanceof ClassDefStmt && ((ClassDefStmt) astElement).getName().equals(className))
-                .get(0).filter(stmt -> stmt instanceof FunctionDefStmt)
-                .stream().map(func -> ((FunctionDefStmt) func).getName())
-                .collect(Collectors.toList());
+            module.filter(astElement -> astElement instanceof ClassDefStmt &&
+                            ((ClassDefStmt) astElement).getName().equals(className))
+                    .get(0).filter(stmt -> stmt instanceof FunctionDefStmt)
+                    .stream().map(func -> ((FunctionDefStmt) func).getName())
+                    .collect(Collectors.toList());
 
 
     /**
@@ -141,11 +144,11 @@ public class QueryOnClass {
      * Hint1: You can reuse the results of {@link QueryOnClass#findAllMethods}
      */
     public Supplier<List<String>> findClassesWithMain = () ->
-        module.filter(astElement -> astElement instanceof ClassDefStmt)
-                .stream()
-                .map(classDefStmt -> ((ClassDefStmt) classDefStmt).getName())
-                .filter(name -> this.findAllMethods.apply(name).contains("main"))
-                .collect(Collectors.toList());
+            module.filter(astElement -> astElement instanceof ClassDefStmt)
+                    .stream()
+                    .map(classDefStmt -> ((ClassDefStmt) classDefStmt).getName())
+                    .filter(name -> this.findAllMethods.apply(name).contains("main"))
+                    .collect(Collectors.toList());
 //        List<String> names = new ArrayList<>();
 //        ArrayList<ASTElement> classDefStmts = module.filter(astElement -> astElement instanceof ClassDefStmt);
 //        for (ASTElement classDefStmt : classDefStmts) {

@@ -2,6 +2,7 @@ package hk.ust.comp3021.expr;
 
 import hk.ust.comp3021.misc.*;
 import hk.ust.comp3021.utils.*;
+
 import java.util.ArrayList;
 
 public class ConstantExpr extends ASTExpr {
@@ -18,11 +19,10 @@ public class ConstantExpr extends ASTExpr {
             this.kind = node.getAttribute("kind");
         }
     }
-    
+
     @Override
     public ArrayList<ASTElement> getChildren() {
         ArrayList<ASTElement> children = new ArrayList<>();
         return children;
     }
-
 }

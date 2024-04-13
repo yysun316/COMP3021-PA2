@@ -17,13 +17,11 @@ public class TupleExpr extends ASTExpr {
         }
         this.ctx = new ASTEnumOp(node.getChildByIdx(1));
     }
-    
     @Override
     public ArrayList<ASTElement> getChildren() {
         ArrayList<ASTElement> children = new ArrayList<>();
         children.addAll(elts);
         return children;
     }
-    
 }
 

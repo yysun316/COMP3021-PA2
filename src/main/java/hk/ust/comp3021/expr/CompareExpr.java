@@ -2,6 +2,7 @@ package hk.ust.comp3021.expr;
 
 import hk.ust.comp3021.misc.*;
 import hk.ust.comp3021.utils.*;
+
 import java.util.*;
 
 
@@ -34,5 +35,4 @@ public class CompareExpr extends ASTExpr {
         children.addAll(comparators);
         return children;
     }
-    
 }

@@ -32,10 +32,10 @@ public class QueryOnNode {
     public Consumer<Integer> findFuncWithArgGtN = (paramN) -> {
         id2ASTModules.forEach((moduleID, module) -> {
             module.filter(el -> el instanceof FunctionDefStmt && ((FunctionDefStmt) el).getParamNum() >= paramN)
-                        .forEach(el -> {
-                            String output = moduleID + "_" + ((FunctionDefStmt) el).getName() + "_" + el.getLineNo();
-                            System.out.println(output);
-                        });
+                    .forEach(el -> {
+                        String output = moduleID + "_" + ((FunctionDefStmt) el).getName() + "_" + el.getLineNo();
+                        System.out.println(output);
+                    });
         });
     };
 
@@ -50,23 +50,23 @@ public class QueryOnNode {
     public Supplier<HashMap<String, Integer>> calculateOp2Nums = () -> {
         HashMap<String, Integer> op2Num = new HashMap<>();
         id2ASTModules.forEach((moduleID, module) -> {
-                module.forEach(el -> {
-                    if (el instanceof BinOpExpr) {
-                        ASTEnumOp op = ((BinOpExpr) el).getOp();
-                        op2Num.put(op.getOperatorName(), op2Num.getOrDefault(op.getOperatorName(), 0) + 1);
-                    } else if (el instanceof BoolOpExpr) {
-                        ASTEnumOp op = ((BoolOpExpr) el).getOp();
-                        op2Num.put(op.getOperatorName(), op2Num.getOrDefault(op.getOperatorName(), 0) + 1);
-                    } else if (el instanceof CompareExpr) {
-                        ArrayList<ASTEnumOp> op = ((CompareExpr) el).getOps();
-                        op.forEach(o -> op2Num.put(o.getOperatorName(), op2Num.getOrDefault(o.getOperatorName(), 0) + 1));
-                    } else if (el instanceof UnaryOpExpr) {
-                        ASTEnumOp op = ((UnaryOpExpr) el).getOp();
-                        op2Num.put(op.getOperatorName(), op2Num.getOrDefault(op.getOperatorName(), 0) + 1);
-                    } else if (el instanceof AugAssignStmt) {
-                        ASTEnumOp op = ((AugAssignStmt) el).getOp();
-                        op2Num.put(op.getOperatorName(), op2Num.getOrDefault(op.getOperatorName(), 0) + 1);
-                    }
+            module.forEach(el -> {
+                if (el instanceof BinOpExpr) {
+                    ASTEnumOp op = ((BinOpExpr) el).getOp();
+                    op2Num.put(op.getOperatorName(), op2Num.getOrDefault(op.getOperatorName(), 0) + 1);
+                } else if (el instanceof BoolOpExpr) {
+                    ASTEnumOp op = ((BoolOpExpr) el).getOp();
+                    op2Num.put(op.getOperatorName(), op2Num.getOrDefault(op.getOperatorName(), 0) + 1);
+                } else if (el instanceof CompareExpr) {
+                    ArrayList<ASTEnumOp> op = ((CompareExpr) el).getOps();
+                    op.forEach(o -> op2Num.put(o.getOperatorName(), op2Num.getOrDefault(o.getOperatorName(), 0) + 1));
+                } else if (el instanceof UnaryOpExpr) {
+                    ASTEnumOp op = ((UnaryOpExpr) el).getOp();
+                    op2Num.put(op.getOperatorName(), op2Num.getOrDefault(op.getOperatorName(), 0) + 1);
+                } else if (el instanceof AugAssignStmt) {
+                    ASTEnumOp op = ((AugAssignStmt) el).getOp();
+                    op2Num.put(op.getOperatorName(), op2Num.getOrDefault(op.getOperatorName(), 0) + 1);
+                }
             });
         });
         return op2Num;
@@ -83,7 +83,8 @@ public class QueryOnNode {
         HashMap<String, Long> node2Nums = new HashMap<>();
         if ("-1".equals(astID)) {
             id2ASTModules.forEach((moduleID, module) -> {
-                module.groupingBy(ASTElement::getNodeType, Collectors.counting()).forEach((key, value) ->
+                module.groupingBy(ASTElement::getNodeType, Collectors.counting())
+                        .forEach((key, value) ->
                                 node2Nums.put(key, node2Nums.getOrDefault(key, 0L) + value.intValue())
                         );
             });
@@ -95,7 +96,8 @@ public class QueryOnNode {
 
 
     /**
-     * TODO `processNodeFreq` sort all functions in all modules {@link QueryOnNode#id2ASTModules} based on the number of nodes in FunctionDefStmt subtree
+     * TODO `processNodeFreq` sort all functions in all modules {@link QueryOnNode#id2ASTModules} based on the
+     * number of nodes in FunctionDefStmt subtree
      *
      * @param null
      * @return a list of entries sorted in descending order where the key is function name
@@ -107,8 +109,16 @@ public class QueryOnNode {
         List<Map.Entry<String, Integer>> funcName2NodeNum = new ArrayList<>();
         id2ASTModules.forEach((moduleID, module) ->
                 module.filter(el -> el instanceof FunctionDefStmt)
-                                .forEach(func ->
-                                        funcName2NodeNum.add(new AbstractMap.SimpleEntry<>(moduleID + "_" + ((FunctionDefStmt) func).getName() + "_" + func.getLineNo(), countNodes(func)))
+                        .forEach(func ->
+                                funcName2NodeNum.add(
+                                        new AbstractMap.SimpleEntry<>(
+                                                moduleID +
+                                                        "_" +
+                                                        ((FunctionDefStmt) func).getName() +
+                                                        "_" +
+                                                        func.getLineNo(), countNodes(func)
+                                        )
+                                )
                         )
         );
 //        System.out.println(funcName2NodeNum.size());

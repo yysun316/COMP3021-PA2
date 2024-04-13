@@ -56,7 +56,6 @@ public class ClassDefStmt extends ASTStmt {
     public String getName() {
         return this.name;
     }
-    
     public ArrayList<ASTExpr> getBases() {
         return this.bases;
     }

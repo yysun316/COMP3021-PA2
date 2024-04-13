@@ -1,13 +1,11 @@
 package hk.ust.comp3021.misc;
 
-import hk.ust.comp3021.query.QueryOnNode;
 import hk.ust.comp3021.utils.*;
 
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public abstract class ASTElement {
     private int lineno;
@@ -69,10 +67,12 @@ public abstract class ASTElement {
     public abstract ArrayList<ASTElement> getChildren();
 
     /**
-     * TODO `filter` mimic {@link java.util.stream.Stream#filter(Predicate)} but operates on AST tree structure instead of List
+     * TODO `filter` mimic {@link java.util.stream.Stream#filter(Predicate)} but operates on AST tree structure
+     * instead of List
      * TODO please design the function by yourself to pass complication and the provided test cases
      *
-     * @param predicate representing a boolean-valued function that takes ASTElement as input parameter and returns a bool result
+     * @param predicate representing a boolean-valued function that takes ASTElement as input parameter and returns
+     *                  a bool result
      * @return an ArrayList of ASTElement where predicate returns true
      * <p>
      * Hints: traverse the tree and put those satisfy predicates into array list
@@ -108,15 +108,18 @@ public abstract class ASTElement {
     }
 
     /**
-     * TODO `groupingBy` mimic {@link java.util.stream.Collectors#groupingBy(Function, Collector)} )} but operates on AST tree structure instead of List
+     * TODO `groupingBy` mimic {@link java.util.stream.Collectors#groupingBy(Function, Collector)} )} but operates on
+     * AST tree structure instead of List
      * TODO please design the function by yourself to pass complication and the provided test cases
      *
-     * @param classifier representing a function that classifies an ASTElement argument and produces the classification result with generic type
+     * @param classifier representing a function that classifies an ASTElement argument and produces the classification
+     *                   result with generic type
      * @param collector  representing a collector used to accumulate the ASTElement object into results
      * @return a map whose key and value are all generic types
      * <p>
      * Hints: traverse the tree and group them if they belong to the same categories
-     * Hints: please refer to the usage of {@link java.util.stream.Collectors#groupingBy(Function, Collector)}} to learn more about this method
+     * Hints: please refer to the usage of {@link java.util.stream.Collectors#groupingBy(Function, Collector)}} to learn
+     * more about this method
      */
 
     public <K, V, A> Map<K, V> groupingBy(Function<ASTElement, K> classifier, Collector<ASTElement, A, V> collector) {
@@ -135,6 +138,8 @@ public abstract class ASTElement {
             collector.accumulator().accept(map.get(key), element);
         });
 
-        return new HashMap<>(map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> collector.finisher().apply(entry.getValue()))));
+        return new HashMap<>(map.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> collector.finisher().apply(entry.getValue()))));
     }
 }

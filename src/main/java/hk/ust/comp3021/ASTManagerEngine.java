@@ -1,4 +1,5 @@
 package hk.ust.comp3021;
+
 import hk.ust.comp3021.query.*;
 import hk.ust.comp3021.utils.*;
 
@@ -9,7 +10,6 @@ import java.util.*;
 public class ASTManagerEngine {
     private final HashMap<String, ASTModule> id2ASTModules = new HashMap<>();
     public QueryOnNode queryOnNode = new QueryOnNode(id2ASTModules);
-    
 
     public HashMap<String, ASTModule> getId2ASTModules() {
         return id2ASTModules;
@@ -43,10 +43,8 @@ public class ASTManagerEngine {
             System.out.println("  12: Find all the overriding methods in all classes.");
             System.out.println("  13: Given the name of a class, find all the methods that it possesses.");
             System.out.println("  14: Find all the classes that possesses main function.");
-        
             // Bonus Task 15
             System.out.println("  15: An API misuse bud detector. Return the list of function names that contain a bug.");
-
             System.out.println("  16: Exit");
             System.out.println("----------------------------------------------------------------------");
             Scanner scan1 = new Scanner(System.in);
@@ -353,11 +351,10 @@ public class ASTManagerEngine {
         Scanner scan2 = new Scanner(System.in);
         if (scan2.hasNextLine()) {
             String classA = scan2.nextLine();
-            if(scan2.hasNextLine()) {
+            if (scan2.hasNextLine()) {
                 String classB = scan2.nextLine();
                 System.out.println("Answer is " + queryOnClass.haveSuperClass.apply(classA, classB));
             }
-            
         }
     }
 
@@ -386,7 +383,7 @@ public class ASTManagerEngine {
         }
     }
 
-     /*
+    /*
      * Task 14: Find all the classes that possesses main function.
      */
     public void userInterfaceFindClassesWithMain() {
@@ -394,7 +391,6 @@ public class ASTManagerEngine {
         QueryOnClass queryOnClass = new QueryOnClass(id2ASTModules.get(queryID));
         Scanner scan2 = new Scanner(System.in);
         System.out.println("Answer is " + queryOnClass.findClassesWithMain.get());
-        
     }
 
     /*
@@ -403,9 +399,8 @@ public class ASTManagerEngine {
     public void bugDetector() {
         String queryID = this.parseQueryASTID();
         BugDetector budDetector = new BugDetector(id2ASTModules.get(queryID));
-        System.out.println("Answer is " + budDetector.detect.get());   
+        System.out.println("Answer is " + budDetector.detect.get());
     }
-
 
     private String parseQueryASTID() {
         System.out.println("Please specify the AST ID to query (" + id2ASTModules.keySet() + ")");

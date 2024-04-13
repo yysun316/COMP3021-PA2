@@ -37,8 +37,6 @@ public class ASTArguments extends ASTElement {
             }
             return children;
         }
-        
-        
         @Override
         public String getNodeType() {
             return "arg";
@@ -70,7 +68,6 @@ public class ASTArguments extends ASTElement {
         }
 
     }
-    
     /*
     * Return the number of ASTArg child nodes
     */
@@ -88,7 +85,6 @@ public class ASTArguments extends ASTElement {
 
         return children;
     }
-    
 
     @Override
     public String getNodeType() {

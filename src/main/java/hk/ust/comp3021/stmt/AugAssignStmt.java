@@ -30,5 +30,4 @@ public class AugAssignStmt extends ASTStmt {
         children.add(value);
         return children;
     }
-    
 }

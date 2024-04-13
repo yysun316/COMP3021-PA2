@@ -29,5 +29,4 @@ public class NameExpr extends ASTExpr {
         ArrayList<ASTElement> children = new ArrayList<>();
         return children;
     }
-    
 }

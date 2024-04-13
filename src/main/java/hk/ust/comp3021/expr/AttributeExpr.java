@@ -41,7 +41,6 @@ public class AttributeExpr extends ASTExpr {
     public String getAttr() {
         return attr;
     }
-    
 
     @Override
     public ArrayList<ASTElement> getChildren() {
@@ -49,6 +48,5 @@ public class AttributeExpr extends ASTExpr {
         children.add(value);
         return children;
     }
-    
 
 }
