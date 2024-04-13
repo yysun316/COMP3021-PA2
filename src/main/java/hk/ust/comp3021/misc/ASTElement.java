@@ -83,7 +83,8 @@ public abstract class ASTElement {
             result.add(this);
         }
         for (ASTElement child : this.getChildren()) { // recursive call
-            result.addAll(child.filter(predicate));
+            if (child != null)
+                result.addAll(child.filter(predicate));
         }
         return result;
     }
@@ -101,7 +102,8 @@ public abstract class ASTElement {
     public void forEach(Consumer<ASTElement> action) {
         action.accept(this);
         for (ASTElement child : this.getChildren()) {
-            child.forEach(action);
+            if (child != null)
+                child.forEach(action);
         }
     }
 
@@ -124,17 +126,15 @@ public abstract class ASTElement {
         // Intermediate container.
         Map<K, A> map = new HashMap<>();
         // accept ASTElement object and accumulate it into results
-        Consumer<ASTElement> action = element -> {
+        forEach(element -> {
             // 1. apply classifier to element to get key
             K key = classifier.apply(element);
             // 2. get container from map by key, if not exist, create a new key-value pair
-            A container = map.computeIfAbsent(key, k -> collector.supplier().get());
+            map.computeIfAbsent(key, k -> collector.supplier().get()); // putIfAbsent
             // 3. accumulate ASTElement object into results
-            collector.accumulator().accept(container, element);
-        };
+            collector.accumulator().accept(map.get(key), element);
+        });
 
-        this.forEach(action);
-        return map.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> collector.finisher().apply(entry.getValue())));
+        return new HashMap<>(map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> collector.finisher().apply(entry.getValue()))));
     }
 }
