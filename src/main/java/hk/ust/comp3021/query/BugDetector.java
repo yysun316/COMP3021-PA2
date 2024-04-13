@@ -25,14 +25,6 @@ public class BugDetector {
     public Supplier<List<String>> detect = () -> {
         // Get all the functions
         ArrayList<ASTElement> functions = module.filter(astElement -> astElement instanceof FunctionDefStmt);
-
-        // Case1: file open, xxx = open()
-        // one open file and have many reference to it.
-        // However, there should only be one close (call expr) with respect to each of it.
-        // Each open , has a close --> # Call is even
-        // xxx can be assigned to yyy.
-        // xxx cannot be reassigned before close called on it, or before it's assigned to yyy.
-
         // Create a table which stores all the variable -> callExpr
         // (if it's not a call expr, we need to find it in the table)
         // If variable is assigned to others before close called on it, or before it's assigned to another variable,
