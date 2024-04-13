@@ -26,6 +26,12 @@ public class AssignStmt extends ASTStmt {
         children.add(value);
         return children;
     }
-    
+
+    public ArrayList<ASTExpr> getTargets() {
+        return targets;
+    }
+    public ASTExpr getValue() {
+        return value;
+    }
 }
 
